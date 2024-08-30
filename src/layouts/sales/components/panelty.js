@@ -6,7 +6,7 @@ import axios from 'axios';
 import successgif from '../../../assets/images/succsessful2.gif';
 import '../../../assets/css/successgif.css';
 import mplus from "../../../assets/images/mplus.png";
-
+import QRCode from 'react-qr-code'; // Import QRCode
 const Panelty = () => {
   const [vehicleNumber, setVehicleNumber] = useState('');
   const [penaltyFor, setPenaltyFor] = useState('');
@@ -375,6 +375,10 @@ const Panelty = () => {
               owners risk. This receipt is valid for single-use only.
             </span>
           </p>
+          {/* QR Code */}
+          <div className="qrcode-container" style={{textAlign:'center'}}>
+              <QRCode value={vehicleDetails.PenaltyNumber || ''} size={100} />
+            </div>
         </div>
       </ModalBody>
       <ModalFooter>
@@ -418,6 +422,10 @@ const Panelty = () => {
               owners risk. This receipt is valid for single-use only.
             </span>
           </p>
+           {/* QR Code */}
+           <div className="qrcode-container" style={{textAlign:'center'}}>
+              <QRCode value={vehicleDetails.PenaltyNumber || ''} size={100} />
+            </div>
         </div>
       </ModalBody>
       <ModalFooter>

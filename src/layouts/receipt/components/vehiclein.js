@@ -20,6 +20,8 @@ import successgif from "../../../assets/images/succsessful2.gif";
 import "../../../assets/css/successgif.css";
 import mplus from "../../../assets/images/mplus.png";
 import { useNavigate } from 'react-router-dom';
+import QRCode from 'react-qr-code'; // Import QRCode
+
 const VehicleIn = () => {
   const [vehicleNumber, setVehicleNumber] = useState("");
   const [vehicleType, setVehicleType] = useState("");
@@ -29,7 +31,23 @@ const VehicleIn = () => {
   const [modal, setModal] = useState(false);
   const [duplicateModal, setDuplicateModal] = useState(false);
   const [vehicleDetails, setVehicleDetails] = useState({});
-  
+
+
+  const handleANPRClick = async () => {
+    try {
+      const response = await fetch('http://localhost:3005/api/latestin-nprdata');
+      if (response.ok) {
+        const data = await response.json();
+        setVehicleNumber(data.plateNumber); // Set the vehicle number from the API response
+      } else {
+        console.error('Failed to fetch ANPR data');
+      }
+    } catch (error) {
+      console.error('Error fetching ANPR data:', error);
+    }
+  };
+
+
   const receiptRef = useRef(null);
   const duplicateReceiptRef = useRef(null);
 
@@ -162,7 +180,7 @@ const VehicleIn = () => {
       printWindow.close();
     };
   };
-  
+
   const printDuplicateReceipt = () => {
     const printWindow = window.open("", "", "width=800,height=600");
     printWindow.document.open();
@@ -237,7 +255,7 @@ const VehicleIn = () => {
       printWindow.close();
     };
   };
-  
+
 
   const handleSubmit = async () => {
     if (!selectedVehicleType) {
@@ -315,29 +333,33 @@ const VehicleIn = () => {
                   ))}
                 </Input>
               </FormGroup>
-           <Row>
-           <Label for="vehicleNumber" style={{ fontSize: "18px" }}>
+              <Row>
+                <Label for="vehicleNumber" style={{ fontSize: "18px" }}>
                   Vehicle Number
                 </Label>
-            <Col md={9}>
+                <Col md={9}>
 
-            <FormGroup>
-               
-                <Input
-                  type="text"
-                  id="vehicleNumber"
-                  value={vehicleNumber}
-                  onChange={(e) => setVehicleNumber(e.target.value)}
-                  placeholder="Enter vehicle number"
-                />
-              </FormGroup>
-            </Col>
-            <Col md={3}>
-               
-            <Button type="button" className="btn btn-danger">ANPR </Button>
-            </Col>        
-           </Row>
-         
+                  <FormGroup>
+
+                    <Input
+                      type="text"
+                      id="vehicleNumber"
+                      value={vehicleNumber}
+                      onChange={(e) => setVehicleNumber(e.target.value)}
+                      placeholder="Enter vehicle number"
+                    />
+                  </FormGroup>
+                </Col>
+                <Col md={3}>
+
+                  <Button
+                    type="button"
+                    className="btn btn-danger"
+                    onClick={handleANPRClick}
+                  >ANPR </Button>
+                </Col>
+              </Row>
+
               <Row className="mb-3 mt-2">
                 <Col>
                   <Button color="info" className="mybutton" block onClick={handleSubmit}>
@@ -346,16 +368,16 @@ const VehicleIn = () => {
                 </Col>
               </Row>
               <Row>
-              <Col xs="6">
-        <Button color="info" className="mybutton" block onClick={handlePassClick}>
-          Pass
-        </Button>
-      </Col>
-      <Col xs="6">
-        <Button color="info" className="mybutton" block onClick={handlePenaltyClick}>
-          Penalty
-        </Button>
-      </Col>
+                <Col xs="6">
+                  <Button color="info" className="mybutton" block onClick={handlePassClick}>
+                    Pass
+                  </Button>
+                </Col>
+                <Col xs="6">
+                  <Button color="info" className="mybutton" block onClick={handlePenaltyClick}>
+                    Penalty
+                  </Button>
+                </Col>
               </Row>
             </CardBody>
           </Card>
@@ -397,12 +419,17 @@ const VehicleIn = () => {
                 Rate: <strong>{vehicleDetails.rate}</strong>
               </p>
             </div>
+
             <p className="receipt-footer">
               <span style={{ fontSize: "10px", fontFamily: 'Arial' }}>
                 We are not responsible for any vehicle damage or theft. Vehicles are parked at the
                 owners risk. This receipt is valid for single-use only.
               </span>
             </p>
+            {/* QR Code */}
+            <div className="qrcode-container" style={{ textAlign: 'center' }}>
+              <QRCode value={vehicleDetails.receiptNumber || ''} size={100} />
+            </div>
           </div>
         </ModalBody>
 
@@ -453,12 +480,17 @@ const VehicleIn = () => {
                 Rate: <strong>{vehicleDetails.rate}</strong>
               </p>
             </div>
+
             <p className="receipt-footer">
               <span style={{ fontSize: "10px", fontFamily: 'Arial' }}>
                 We are not responsible for any vehicle damage or theft. Vehicles are parked at the
                 owners risk. This receipt is valid for single-use only.
               </span>
             </p>
+            {/* QR Code */}
+            <div className="qrcode-container" style={{ textAlign: 'center' }}>
+              <QRCode value={vehicleDetails.receiptNumber || ''} size={100} />
+            </div>
           </div>
         </ModalBody>
 

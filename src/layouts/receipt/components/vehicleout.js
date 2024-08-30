@@ -1,8 +1,8 @@
 import React, { useState, useRef } from 'react';
 import { Button, Input, Container, Row, Col, Card, CardBody, CardTitle, FormGroup, Label, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 import axios from 'axios';
-import successgif from '../../../assets/images/succsessful2.gif'; 
-import '../../../assets/css/successgif.css'; 
+import successgif from '../../../assets/images/succsessful2.gif';
+import '../../../assets/css/successgif.css';
 import mplus from "../../../assets/images/mplus.png";
 
 const VehicleLogout = () => {
@@ -15,6 +15,20 @@ const VehicleLogout = () => {
 
   const receiptRef = useRef(null);
   const duplicateReceiptRef = useRef(null);
+
+  const handleANPRClick = async () => {
+    try {
+      const response = await fetch('http://localhost:3005/api/latestout-nprdata');
+      if (response.ok) {
+        const data = await response.json();
+        setVehicleNumber(data.plateNumber); 
+      } else {
+        console.error('Failed to fetch ANPR data');
+      }
+    } catch (error) {
+      console.error('Error fetching ANPR data:', error);
+    }
+  };
 
   const handleLogout = async () => {
     const imei = sessionStorage.getItem('IMEI');
@@ -241,35 +255,40 @@ const VehicleLogout = () => {
             <CardBody>
               <CardTitle tag="h6" className="cardt text-center">Vehicle Logout</CardTitle>
               <Row>
-              <Label for="vehicleNumber" style={{ fontSize: '18px' }}>Vehicle Number</Label>
-              <Col md={9}>
-                <FormGroup>
-             
-                <Input
-                  type="text"
-                  id="vehicleNumber"
-                  value={vehicleNumber}
-                  onChange={(e) => setVehicleNumber(e.target.value)}
-                  placeholder="Enter vehicle number"
-                />
-              </FormGroup>
+                <Label for="vehicleNumber" style={{ fontSize: '18px' }}>Vehicle Number</Label>
+                <Col md={9}>
+                  <FormGroup>
+
+                    <Input
+                      type="text"
+                      id="vehicleNumber"
+                      value={vehicleNumber}
+                      onChange={(e) => setVehicleNumber(e.target.value)}
+                      placeholder="Enter vehicle number"
+                    />
+                  </FormGroup>
                 </Col>
                 <Col md={3}>
-    
-            
-            <Button type="button" className="btn btn-danger">ANPR </Button>
-            </Col>
-           </Row>
-        
-           <FormGroup>
+
+
+                  <Button
+                    type="button"
+                    className="btn btn-danger"
+                    onClick={handleANPRClick}
+                  >ANPR </Button>
+
+                </Col>
+              </Row>
+
+              <FormGroup>
                 <Label for="paymentType" style={{ fontSize: "18px" }}>
                   Select Payment Type
                 </Label>
                 <Input
                   type="select"
                   id="paymentType"
-                  // value={paymentType}
-                  // onChange={(e) => setPaymentType(e.target.value)}
+                // value={paymentType}
+                // onChange={(e) => setPaymentType(e.target.value)}
                 >
                   <option value="Select payment type" disabled>
                     Select payment type
@@ -282,7 +301,7 @@ const VehicleLogout = () => {
                   <option value="FastTag">FastTag</option>
                 </Input>
               </FormGroup>
-          
+
 
               {errorMessage && <p className="text-danger">{errorMessage} </p>}
               <Row>

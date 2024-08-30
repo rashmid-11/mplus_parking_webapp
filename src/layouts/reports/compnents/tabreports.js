@@ -2,11 +2,12 @@ import React, { useState } from 'react';
 import { Container, Row, Col, Card, CardImg, CardBody, CardTitle, Modal, ModalHeader, ModalBody, ModalFooter, Button } from 'reactstrap';
 import Reportsale from './reportsale'; // Import the Reportsale component
 import Details from './details'; // Import the Details component
-
+import UserWiseReport from './UserwiseRport';
 import p1 from '../../../assets/images/sales1.jpg';
 import p2 from '../../../assets/images/detailteam.avif';
 import p3 from '../../../assets/images/datewisereport.jpg';
 import p4 from '../../../assets/images/site2.avif';
+import p5 from '../../../assets/images/userwisereport.jpg'; 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../css/tab.css'; // Import the custom CSS file
 import DateRangeReport from './daterangereport';
@@ -17,7 +18,8 @@ const Tabreports = () => {
   const [modalDetails, setModalDetails] = useState(false);
   const [modalDaterange, setModalDaterange] = useState(false);
   const [modalUsersite, setModalUsersite] = useState(false);
-
+  const [modalUserwise, setModalUserwise] = useState(false);
+  const toggleModalUserwise = () => setModalUserwise(!modalUserwise);
   const toggleModalSales = () => setModalSales(!modalSales);
   const toggleModalDetails = () => setModalDetails(!modalDetails);
   const toggleModalDaterange = () => setModalDaterange(!modalDaterange);
@@ -76,6 +78,18 @@ const Tabreports = () => {
         </Col>
       </Row>
 
+      <Row>
+        <Col md="6" onClick={toggleModalUserwise}>
+          <Card className="clickable-card" style={{ boxShadow:'rgba(50, 50, 93, 0.25) 0px 6px 12px -2px, rgba(0, 0, 0, 0.3) 0px 3px 7px -3px' }}>
+            <CardBody>
+              <CardTitle tag="h4" style={{ fontWeight: '800' }}>User Wise Reports</CardTitle>
+            </CardBody>
+            <CardImg className='cimg' top width="100%" height="330px" src={p5} alt="User Wise Reports" />
+          </Card>
+        </Col>
+      </Row>
+
+
       {/* Modal for Sales */}
       <Modal isOpen={modalSales} toggle={toggleModalSales} size="lg" centered>
         <ModalHeader toggle={toggleModalSales}>Sales</ModalHeader>
@@ -117,6 +131,17 @@ const Tabreports = () => {
           <Button color="secondary" onClick={toggleModalUsersite}>Close</Button>
         </ModalFooter>
       </Modal>
+      
+      <Modal isOpen={modalUserwise} toggle={toggleModalUserwise} size="lg" centered>
+        <ModalHeader toggle={toggleModalUserwise}>User Wise Reports</ModalHeader>
+        <ModalBody>
+          <UserWiseReport />
+        </ModalBody>
+        <ModalFooter>
+          <Button color="secondary" onClick={toggleModalUserwise}>Close</Button>
+        </ModalFooter>
+      </Modal>
+
     </Container>
   );
 };

@@ -5,7 +5,7 @@ import {
 import axios from 'axios';
 import successgif from '../../../assets/images/succsessful2.gif'; 
 import '../../../assets/css/successgif.css'; 
-
+import QRCode from 'react-qr-code'; // Import QRCode
 import mplus from "../../../assets/images/mplus.png";
 
 const Pass = () => {
@@ -480,6 +480,10 @@ const Pass = () => {
                 owners risk. This receipt is valid for single-use only.
               </span>
             </p>
+              {/* QR Code */}
+              <div className="qrcode-container" style={{textAlign:'center'}}>
+              <QRCode value={vehicleDetails.PassNumber || ''} size={100} />
+            </div>
           </div>
         </ModalBody>
         <ModalFooter>
@@ -525,6 +529,10 @@ const Pass = () => {
                 owners risk. This receipt is valid for single-use only.
               </span>
             </p>
+              {/* QR Code */}
+              <div className="qrcode-container" style={{textAlign:'center'}}>
+              <QRCode value={vehicleDetails.PassNumber || ''} size={100} />
+            </div>
           </div>
         </ModalBody>
         <ModalFooter>
