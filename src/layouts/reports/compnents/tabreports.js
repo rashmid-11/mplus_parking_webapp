@@ -4,9 +4,9 @@ import Reportsale from './reportsale'; // Import the Reportsale component
 import Details from './details'; // Import the Details component
 import UserWiseReport from './UserwiseRport';
 import p1 from '../../../assets/images/sales1.jpg';
-import p2 from '../../../assets/images/detailteam.avif';
+import p2 from '../../../assets/images/detailteam.jpg';
 import p3 from '../../../assets/images/datewisereport.jpg';
-import p4 from '../../../assets/images/site2.avif';
+import p4 from '../../../assets/images/site2.jpg';
 import p5 from '../../../assets/images/userwisereport.jpg'; 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../css/tab.css'; // Import the custom CSS file

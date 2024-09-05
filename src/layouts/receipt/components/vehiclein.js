@@ -280,7 +280,7 @@ const VehicleIn = () => {
     };
 
     try {
-      const response = await axios.post("/api/AppServerCall/vehicleInRequest", null, {
+      const response = await axios.post("/newapi/AppServerCall/vehicleInRequest", null, {
         params: storedSession,
       });
 

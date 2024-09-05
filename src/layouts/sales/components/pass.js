@@ -131,6 +131,8 @@ const Pass = () => {
       vehNo: vehicleNumber,
       passType,
       startdate: selectDate,
+      endDate:endDate,
+      passAmount:editableAmount,
       vehicleType,
       personName: vehicleUserName,
       companyName,
@@ -139,7 +141,7 @@ const Pass = () => {
       designation: designation || ''
     };
   
-    axios.post('/api/AppServerCall/passDetails', null, {
+    axios.post('/newapi/AppServerCall/passDetails', null, {
       params: storedSession
     })
       .then(response => {

@@ -444,12 +444,12 @@ const DateRangeReport = () => {
                 </div>
                 <Row>
   <Col md={6}>
-    <Button className="w-100" onClick={() => generatePDF(receiptRef)}>
+    <Button className="w-100 mt-2" onClick={() => generatePDF(receiptRef)}>
       Download PDF
     </Button>
   </Col>
   <Col md={6}>
-    <Button className="w-100" color="primary" onClick={printReceipt}>
+    <Button className="w-100 mt-2" color="primary" onClick={printReceipt}>
       Print Receipt
     </Button>
   </Col>

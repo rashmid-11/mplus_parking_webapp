@@ -94,10 +94,11 @@ const Panelty = () => {
       userId: sessionStorage.getItem('IdCustomer'),
       vehNo: vehicleNumber,
       penaltyType: penaltyFor,
+      penaltyRate:penaltyRate,
       no_of_time: noOfTimes
     };
 
-    axios.post('/api/AppServerCall/penaltyDetails', null, {
+    axios.post('/newapi/AppServerCall/penaltyDetails', null, {
       params: storedSession
     })
       .then(response => {

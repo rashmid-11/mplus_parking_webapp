@@ -17,8 +17,8 @@ import ArgonBox from "components/ArgonBox";
 import ArgonTypography from "components/ArgonTypography";
 
 // Images (Update these with your vehicle parking images)
-import parking1 from "assets/images/parking1.avif";
-import parking2 from "assets/images/parking2.avif";
+import parking1 from "assets/images/parking1.jpg";
+import parking2 from "assets/images/parking2.jpg";
 import parking3 from "assets/images/parking3.webp";
 
 function Slider() {

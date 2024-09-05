@@ -15,9 +15,10 @@ Coded by www.creative-tim.com
 */
 
 // @mui material components
+// @mui material components
 import Grid from "@mui/material/Grid";
 import Icon from "@mui/material/Icon";
-
+import React, { useEffect, useState } from "react";
 // Argon Dashboard 2 MUI components
 import ArgonBox from "components/ArgonBox";
 import ArgonTypography from "components/ArgonTypography";
@@ -33,11 +34,11 @@ import GradientLineChart from "examples/Charts/LineCharts/GradientLineChart";
 
 // Argon Dashboard 2 MUI base styles
 import typography from "assets/theme/base/typography";
-import { FaCar } from "react-icons/fa";
+
 // Dashboard layout components
 import Slider from "layouts/dashboard/components/Slider";
 import { FaCarSide } from "react-icons/fa6";
-import { RiMotorbikeFill, RiFileList3Line } from 'react-icons/ri';
+
 import Card from 'react-bootstrap/Card';
 import { Line } from 'react-chartjs-2';
 // Data
@@ -49,6 +50,15 @@ import Tabsnew from "layouts/receipt/components/tab";
 import Tabreports from "layouts/reports/compnents/tabreports";
 import { FaArrowAltCircleRight, FaArrowAltCircleLeft, FaPenAlt } from "react-icons/fa";
 import borders from "assets/theme/base/borders";
+
+import {   FaSignInAlt, FaSignOutAlt, FaCarAlt } from "react-icons/fa";
+
+import { Box } from "@mui/material";
+import axios from "axios";
+
+
+
+
 function Default() {
   const lineChartData = {
     labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
@@ -98,6 +108,137 @@ function Default() {
     ]
   };
 
+const [inVehicleCount, setInVehicleCount] = useState(0);
+const [outVehicleCount, setOutVehicleCount] = useState(0);
+const [saleVehicleCount, setSaleVehicleCount] = useState(0);
+const [stockVehicleCount, setStockVehicleCount] = useState(0);
+
+
+
+  useEffect(() => {
+    const fetchInVehicleCount = async () => {
+      try {
+        const imei = sessionStorage.getItem('IMEI');
+        const emailID = sessionStorage.getItem('Email');
+        const password = sessionStorage.getItem('Password');
+        const token = sessionStorage.getItem('Token');
+        const siteId = sessionStorage.getItem('SiteId');
+
+        const response = await axios.post('/newapi/AppServerCall/getInVehicleCount', {
+          imei,
+          emailID,
+          password,
+          token,
+          siteId
+        });
+
+        console.log('InVehicleCount API response:', response.data);
+
+        // Assuming 'Data' contains the count
+        if (response.data?.Data) {
+          setInVehicleCount(response.data.Data); // Update the state with the count value
+        }
+      } catch (error) {
+        console.error('Error fetching InVehicleCount:', error);
+      }
+    };
+
+    fetchInVehicleCount();
+  }, []);
+
+  useEffect(() => {
+    const fetchOutVehicleCount = async () => {
+      try {
+        const imei = sessionStorage.getItem('IMEI');
+        const emailID = sessionStorage.getItem('Email');
+        const password = sessionStorage.getItem('Password');
+        const token = sessionStorage.getItem('Token');
+        const siteId = sessionStorage.getItem('SiteId');
+
+        const response = await axios.post('/newapi/AppServerCall/getOutVehicleCount', {
+          imei,
+          emailID,
+          password,
+          token,
+          siteId
+        });
+
+        console.log('InVehicleCount API response:', response.data);
+
+        // Assuming 'Data' contains the count
+        if (response.data?.Data) {
+          setOutVehicleCount(response.data.Data); // Update the state with the count value
+        }
+      } catch (error) {
+        console.error('Error fetching InVehicleCount:', error);
+      }
+    };
+
+    fetchOutVehicleCount();
+  }, []);
+
+  useEffect(() => {
+    const fetchSaleVehicleCount = async () => {
+      try {
+        const imei = sessionStorage.getItem('IMEI');
+        const emailID = sessionStorage.getItem('Email');
+        const password = sessionStorage.getItem('Password');
+        const token = sessionStorage.getItem('Token');
+        const siteId = sessionStorage.getItem('SiteId');
+
+        const response = await axios.post('/newapi/AppServerCall/getTotalSale', {
+          imei,
+          emailID,
+          password,
+          token,
+          siteId
+        });
+
+        console.log('InVehicleCount API response:', response.data);
+
+        // Assuming 'Data' contains the count
+        if (response.data?.Data) {
+          setSaleVehicleCount(response.data.Data); // Update the state with the count value
+        }
+      } catch (error) {
+        console.error('Error fetching InVehicleCount:', error);
+      }
+    };
+
+    fetchSaleVehicleCount();
+  }, []);
+
+  useEffect(() => {
+    const fetchStockVehicleCount = async () => {
+      try {
+        const imei = sessionStorage.getItem('IMEI');
+        const emailID = sessionStorage.getItem('Email');
+        const password = sessionStorage.getItem('Password');
+        const token = sessionStorage.getItem('Token');
+        const siteId = sessionStorage.getItem('SiteId');
+
+        const response = await axios.post('/newapi/AppServerCall/getStockVehicleCount', {
+          imei,
+          emailID,
+          password,
+          token,
+          siteId
+        });
+
+        console.log('InVehicleCount API response:', response.data);
+
+        // Assuming 'Data' contains the count
+        if (response.data?.Data) {
+          setStockVehicleCount(response.data.Data); // Update the state with the count value
+        }
+      } catch (error) {
+        console.error('Error fetching InVehicleCount:', error);
+      }
+    };
+
+    fetchStockVehicleCount();
+  }, []);
+
 
 
   const { size } = typography;
@@ -108,30 +249,125 @@ function Default() {
       <Grid container spacing={3} mb={3}>
           <Grid item xs={12} md={6} lg={3}>
             <DetailedStatisticsCard
-              title="Total Vehicle"
-              count="530"
-              icon={{ color: "info", component: <FaCar /> }}
+              title="Stock Vehicle"
+             
+              count={ stockVehicleCount}
+             
+              icon={{
+                color: "info",
+                component: (
+                  <Box
+                    sx={{
+                      backgroundColor: "#17a2b8",
+                      borderRadius: "50%",
+                      height: "70px",
+                      width: "70px",
+                      padding: "10px",
+                      display: "inline-flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      marginRight:'10px',
+                      marginTop:'10px'
+                    }}
+                  >
+                    {/* Stack multiple car icons */}
+                    <FaCarAlt size={20} style={{ marginRight: "-5px" }} />
+                    <FaCarAlt size={24} style={{ marginRight: "-5px" }} />
+                    <FaCarAlt size={32} />
+                  </Box>
+                ),
+          
+           }}
             />
           </Grid>
           <Grid item xs={12} md={6} lg={3}>
             <DetailedStatisticsCard
-              title="4 Wheeler"
-              count="23"
-              icon={{ color: "error", component: <FaCarSide /> }}
+              title="In Vehicle"
+              count={inVehicleCount}
+
+              icon={{
+                color: "success",
+                component: (
+                  <Box
+                    sx={{
+                      backgroundColor: "green",
+                      borderRadius: "50%",
+                      padding: "10px", // Reduced padding to allow more room for icons
+                      height: "70px",  // Increased height
+                      width: "70px",   // Increased width
+                      display: "inline-flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                        marginRight:'10px',
+                      marginTop:'10px'
+                    }}
+                  >
+                    <FaCarSide size={30} />    {/* Increased icon size */}
+                    <FaSignInAlt size={30} style={{ marginLeft: "4px" }} />  {/* Increased icon size */}
+                  </Box>
+                ),
+           }}
             />
           </Grid>
           <Grid item xs={12} md={6} lg={3}>
             <DetailedStatisticsCard
-              title="2 Wheeler"
-              count="3"
-              icon={{ color: "success", component: <RiMotorbikeFill /> }}
+              title="Out Vehicle"
+            
+              count={outVehicleCount}
+
+              icon={{
+                color: "error",
+                component: (
+                  <Box
+                    sx={{
+                      backgroundColor: "red",
+                      borderRadius: "50%",
+                      padding: "10px",
+                      height: "70px",
+                      width: "70px",
+                      display: "inline-flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                        marginRight:'10px',
+                      marginTop:'10px'
+                    }}
+                  >
+                    <FaCarSide size={30} />
+                    <FaSignOutAlt size={30} style={{ marginLeft: "4px" }} />
+                  </Box>
+                ),
+          
+          }}
             />
           </Grid>
           <Grid item xs={12} md={6} lg={3}>
             <DetailedStatisticsCard
               title="sales"
-              count="10,430"
-              icon={{ color: "warning", component: <i className="ni ni-cart" /> }}
+              
+              count={saleVehicleCount}
+              icon={{
+                color: "warning",
+                component: (
+                  <Box
+                    sx={{
+                      backgroundColor: "#ffc107",
+                      borderRadius: "50%",
+                      padding: "10px",
+              
+                      height: "70px",
+                      width: "70px",
+                      display: "inline-flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                        marginRight:'10px',
+                      marginTop:'10px'
+                      
+                    }}
+                  >
+                    <i  className="ni ni-cart" />
+                  </Box>
+                ),
+         }}
             />
           </Grid>
           

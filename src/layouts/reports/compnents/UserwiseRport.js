@@ -1,4 +1,4 @@
-import React, { useState, useEffect,useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Container, Row, Col, Card, CardBody, CardTitle, Button } from 'reactstrap';
 import axios from 'axios';
 import '../css/userwise.css'
@@ -12,7 +12,7 @@ const UserWiseReport = () => {
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const [userName, setUserName] = useState(''); // State for storing userName
-  
+
   const receiptRef = useRef(null);
   useEffect(() => {
     // Retrieve userName from sessionStorage on component mount
@@ -79,13 +79,13 @@ const UserWiseReport = () => {
   };
   const generatePDF = (receiptRef) => {
     const receiptElement = receiptRef.current;
-  
+
     // Add padding/margin to the receipt element
     const originalStyle = receiptElement.style.cssText;
     receiptElement.style.padding = '10px';
     receiptElement.style.margin = '10px';
     receiptElement.style.boxSizing = 'border-box';
-  
+
     html2canvas(receiptElement, { scale: 1.5 }).then((canvas) => {
       const imgData = canvas.toDataURL('image/png');
       const pdf = new jsPDF();
@@ -93,21 +93,21 @@ const UserWiseReport = () => {
       const pageHeight = 295;
       const imgHeight = (canvas.height * imgWidth) / canvas.width;
       let heightLeft = imgHeight;
-  
+
       let position = 0;
-  
+
       pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
       heightLeft -= pageHeight;
-  
+
       while (heightLeft >= 0) {
         position = heightLeft - imgHeight;
         pdf.addPage();
         pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
         heightLeft -= pageHeight;
       }
-  
+
       pdf.save('User wise sales data Report.pdf');
-  
+
       // Reset the style after generating the PDF
       receiptElement.style.cssText = originalStyle;
     });
@@ -186,11 +186,11 @@ const UserWiseReport = () => {
                   </p>
                 </div>
               </CardBody>
-              <Button color="secondary" onClick={() => generatePDF(receiptRef)}>
-  Download PDF
-</Button>
-<br></br>
-              <Button color="primary" onClick={printReceipt}>
+              <Button className="w-100 mt-2" color="secondary" onClick={() => generatePDF(receiptRef)}>
+                Download PDF
+              </Button>
+              <br></br>
+              <Button className="w-100 mt-2" color="primary" onClick={printReceipt}>
                 Print
               </Button>
             </Card>

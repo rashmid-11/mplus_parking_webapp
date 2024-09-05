@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Button, Input, Container, Row, Col, Card, CardBody, CardTitle, FormGroup, Label, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 import axios from 'axios';
 import successgif from '../../../assets/images/succsessful2.gif';
@@ -16,12 +16,67 @@ const VehicleLogout = () => {
   const receiptRef = useRef(null);
   const duplicateReceiptRef = useRef(null);
 
+  const [paymentModes, setPaymentModes] = useState([]);
+  const [selectedPaymentMode, setSelectedPaymentMode] = useState('');
+  const [paymentTypes, setPaymentTypes] = useState({});
+
+  useEffect(() => {
+    const fetchPaymentTypes = async () => {
+      try {
+        const imei = sessionStorage.getItem('IMEI');
+        const emailID = sessionStorage.getItem('Email');
+        const password = sessionStorage.getItem('Password');
+        const token = sessionStorage.getItem('Token');
+        const siteId = sessionStorage.getItem('SiteId');
+
+        const response = await axios.post('/newapi/AppServerCall/getPaymentTypes', null, {
+          params: {
+            imei,
+            emailID,
+            password,
+            token,
+            siteId
+          }
+        });
+
+        if (response.data?.Data?.Plist && Array.isArray(response.data.Data.Plist)) {
+          const modes = response.data.Data.Plist.map((item) => item.PaymentMode);
+          const types = response.data.Data.Plist.reduce((acc, item) => {
+            acc[item.PaymentMode] = item.PaymentType;
+            return acc;
+          }, {});
+
+          setPaymentModes(modes);
+          setPaymentTypes(types);
+        } else {
+          console.error('Unexpected response data format:', response.data);
+          setPaymentModes([]);
+          setPaymentTypes({});
+        }
+      } catch (error) {
+        console.error('Error fetching Payment Modes:', error);
+        setPaymentModes([]);
+        setPaymentTypes({});
+      }
+    };
+
+    fetchPaymentTypes();
+  }, []);
+
+  const handlePaymentModeChange = (e) => {
+    const mode = e.target.value;
+    setSelectedPaymentMode(mode);
+    setSelectedPaymentType(paymentTypes[mode] || '');
+  };
+
+  const [selectedPaymentType, setSelectedPaymentType] = useState('');
+
   const handleANPRClick = async () => {
     try {
       const response = await fetch('http://localhost:3005/api/latestout-nprdata');
       if (response.ok) {
         const data = await response.json();
-        setVehicleNumber(data.plateNumber); 
+        setVehicleNumber(data.plateNumber);
       } else {
         console.error('Failed to fetch ANPR data');
       }
@@ -49,19 +104,20 @@ const VehicleLogout = () => {
       return;
     }
 
+    if (!selectedPaymentMode) {
+      setErrorMessage('Please select a Payment Mode');
+      return;
+    }
+
+    if (!selectedPaymentType) {
+      setErrorMessage('Payment type is not selected');
+      return;
+    }
+
     setErrorMessage('');
-    console.log('Attempting to logout vehicle with the following details:');
-    console.log('IMEI:', imei);
-    console.log('Email:', emailID);
-    console.log('Password:', password);
-    console.log('Token:', token);
-    console.log('Vehicle Number:', vehicleNumber);
-    console.log('Site ID:', siteId);
-    console.log('Device ID:', deviceId);
-    console.log('User ID:', userId);
 
     try {
-      const response = await axios.post('/api/AppServerCall/vehicleOutRequest', null, {
+      const response = await axios.post('/newapi/AppServerCall/vehicleOutRequest', null, {
         params: {
           imei,
           emailID,
@@ -71,38 +127,35 @@ const VehicleLogout = () => {
           siteId,
           deviceId,
           userId,
-          isPrepaid: 0
+          isPrepaid: 0,
+          paymenttype: selectedPaymentType, 
+          paymentmode: selectedPaymentMode 
         }
       });
 
-      console.log('Vehicle logged out:', response.data);
-
       if (response.data) {
         const { Message, ShResult, Data, ...details } = response.data;
-        console.log('Server message:', Message);
 
         if (ShResult === 100) {
-          setShowSuccess(true); // Show success message and GIF
-          setLogoutDetails(Data); // Save the logout details for the modal
-          setModal(true); // Show the modal
+          setShowSuccess(true); 
+          setLogoutDetails(Data); 
+          setModal(true); 
 
           setTimeout(() => {
             setShowSuccess(false);
             setVehicleNumber('');
-            // Hide success message after 2 seconds
+            setSelectedPaymentMode(''); 
+            setSelectedPaymentType(''); 
           }, 1000);
         } else {
-          console.error('Logout failed:', Message);
           setErrorMessage('Logout failed: ' + Message);
         }
       } else {
         console.log('Unexpected response format:', response);
       }
-
     } catch (error) {
       console.error('Error logging out vehicle:', error);
       if (error.response) {
-        console.error('Server response:', error.response.data);
         setErrorMessage('Error: ' + error.response.data.Message || 'Unexpected server error');
       } else {
         setErrorMessage('Error: Unable to logout vehicle');
@@ -118,15 +171,23 @@ const VehicleLogout = () => {
         <head>
           <title>Print Receipt</title>
           <style>
+            .receipt {
+              text-align: center;
+            }
+            .center-image {
+              display: block;
+              margin: 0 auto;
+            }
             .receipt-description {
               display: flex;
               flex-direction: column;
               align-items: center;
               margin-bottom: 10px;
+              margin: 10px 0 1px 0;
             }
             .receipt-description p {
               font-size: 12px;
-              margin: 1px 0;
+              margin: 5px 0 1px 0;
               line-height: 1.1;
               color: #555;
             }
@@ -175,7 +236,7 @@ const VehicleLogout = () => {
       setTimeout(() => {
         setDuplicateModal(true);
       }, 1000);
-      // Close the window
+      // Close the window after printing
       printWindow.close();
     };
   };
@@ -188,15 +249,23 @@ const VehicleLogout = () => {
         <head>
           <title>Print Duplicate Receipt</title>
           <style>
+            .receipt {
+              text-align: center;
+            }
+            .center-image {
+              display: block;
+              margin: 0 auto;
+            }
             .receipt-description {
               display: flex;
               flex-direction: column;
               align-items: center;
+              margin: 10px 0 1px 0;
               margin-bottom: 10px;
             }
             .receipt-description p {
               font-size: 12px;
-              margin: 1px 0;
+              margin: 5px 0 1px 0;
               line-height: 1.1;
               color: #555;
             }
@@ -282,24 +351,24 @@ const VehicleLogout = () => {
 
               <FormGroup>
                 <Label for="paymentType" style={{ fontSize: "18px" }}>
-                  Select Payment Type
+                  Select Payment Mode
                 </Label>
                 <Input
                   type="select"
-                  id="paymentType"
-                // value={paymentType}
-                // onChange={(e) => setPaymentType(e.target.value)}
+                  id="paymentMode"
+                  value={selectedPaymentMode}
+                  onChange={handlePaymentModeChange}
                 >
-                  <option value="Select payment type" disabled>
-                    Select payment type
+                  <option value="" disabled>
+                    Select Payment Mode
                   </option>
-                  <option value="Cash">Cash</option>
-                  <option value="UPI">UPI</option>
-                  <option value="CreditCard">Credit Card</option>
-                  <option value="DebitCard">Debit Card</option>
-                  <option value="NetBanking">Net Banking</option>
-                  <option value="FastTag">FastTag</option>
+                  {paymentModes.map((mode, index) => (
+                    <option key={index} value={mode}>
+                      {mode}
+                    </option>
+                  ))}
                 </Input>
+
               </FormGroup>
 
 
