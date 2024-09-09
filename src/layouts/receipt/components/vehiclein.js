@@ -103,8 +103,15 @@ const VehicleIn = () => {
     setSelectedVehicleType(selectedType);
   };
 
+
   const printReceipt = () => {
     const printWindow = window.open("", "", "width=800,height=600");
+    
+    if (!printWindow) {
+      console.error("Failed to open print window.");
+      return;
+    }
+
     printWindow.document.open();
     printWindow.document.write(`
       <html>
@@ -122,12 +129,11 @@ const VehicleIn = () => {
               display: flex;
               flex-direction: column;
               align-items: center;
-              margin-bottom: 10px;
-              margin: 10px 0 1px 0;
+              margin: 10px 0;
             }
             .receipt-description p {
               font-size: 12px;
-              margin: 5px 0 1px 0;
+              margin: 5px 0;
               line-height: 1.1;
               color: #555;
             }
@@ -170,19 +176,39 @@ const VehicleIn = () => {
     `);
     printWindow.document.close();
     printWindow.focus();
+
+    // Print and handle the after-print action
     printWindow.print();
     printWindow.onafterprint = () => {
+      console.log("Print complete.");
       setModal(false);
       setTimeout(() => {
         setDuplicateModal(true);
       }, 1000);
       // Close the window after printing
-      printWindow.close();
+      if (!printWindow.closed) {
+        printWindow.close();
+      }
     };
+
+    // Ensure the onafterprint event is set
+    setTimeout(() => {
+      if (printWindow.closed) {
+        console.log("Print window was closed automatically.");
+      } else {
+        console.log("Print window is still open.");
+      }
+    }, 3000); // Increase the timeout to give more time for the print dialog to close
   };
 
   const printDuplicateReceipt = () => {
     const printWindow = window.open("", "", "width=800,height=600");
+
+    if (!printWindow) {
+      console.error("Failed to open duplicate print window.");
+      return;
+    }
+
     printWindow.document.open();
     printWindow.document.write(`
       <html>
@@ -200,12 +226,12 @@ const VehicleIn = () => {
               display: flex;
               flex-direction: column;
               align-items: center;
-              margin: 10px 0 1px 0;
+              margin: 10px 0;
               margin-bottom: 10px;
             }
             .receipt-description p {
               font-size: 12px;
-              margin: 5px 0 1px 0;
+              margin: 5px 0;
               line-height: 1.1;
               color: #555;
             }
@@ -248,13 +274,182 @@ const VehicleIn = () => {
     `);
     printWindow.document.close();
     printWindow.focus();
+
     printWindow.print();
     printWindow.onafterprint = () => {
+      console.log("Duplicate print complete.");
       setDuplicateModal(false);
-      // Close the window
-      printWindow.close();
+      // Close the window after printing
+      if (!printWindow.closed) {
+        printWindow.close();
+      }
     };
+
+    // Ensure the onafterprint event is set
+    setTimeout(() => {
+      if (printWindow.closed) {
+        console.log("Duplicate print window was closed automatically.");
+      } else {
+        console.log("Duplicate print window is still open.");
+      }
+    }, 3000); // Increase the timeout to give more time for the print dialog to close
   };
+
+
+
+
+  // const printReceipt = () => {
+  //   const printWindow = window.open("", "", "width=800,height=600");
+  //   printWindow.document.open();
+  //   printWindow.document.write(`
+  //     <html>
+  //       <head>
+  //         <title>Print Receipt</title>
+  //         <style>
+  //           .receipt {
+  //             text-align: center;
+  //           }
+  //           .center-image {
+  //             display: block;
+  //             margin: 0 auto;
+  //           }
+  //           .receipt-description {
+  //             display: flex;
+  //             flex-direction: column;
+  //             align-items: center;
+  //             margin-bottom: 10px;
+  //             margin: 10px 0 1px 0;
+  //           }
+  //           .receipt-description p {
+  //             font-size: 12px;
+  //             margin: 5px 0 1px 0;
+  //             line-height: 1.1;
+  //             color: #555;
+  //           }
+  //           .receipt-item p {
+  //             font-size: 12px;
+  //             margin: 1px 0;
+  //             line-height: 1.1;
+  //             white-space: nowrap;
+  //           }
+  //           .receipt-title {
+  //             font-size: 14px;
+  //             margin: 10px 0;
+  //             text-align: center;
+  //             border-bottom: 1px solid #000;
+  //             padding-bottom: 5px;
+  //           }
+  //           .receipt-item p {
+  //             font-size: 12px;
+  //             margin: 1px 0;
+  //             line-height: 1.1;
+  //             white-space: nowrap;
+  //             position: relative;
+  //           }
+  //           .receipt-item p:last-of-type {
+  //             padding-bottom: 10px;
+  //             border-bottom: 1px solid #000;
+  //           }
+  //           .receipt-footer {
+  //             font-size: 5px;
+  //             line-height: 1.1;
+  //             color: #555;
+  //             font-family: Arial;
+  //           }
+  //         </style>
+  //       </head>
+  //       <body>
+  //         ${receiptRef.current.innerHTML}
+  //       </body>
+  //     </html>
+  //   `);
+  //   printWindow.document.close();
+  //   printWindow.focus();
+  //   printWindow.print();
+  //   printWindow.onafterprint = () => {
+  //     setModal(false);
+  //     setTimeout(() => {
+  //       setDuplicateModal(true);
+  //     }, 1000);
+  //     // Close the window after printing
+  //     printWindow.close();
+  //   };
+  // };
+
+  // const printDuplicateReceipt = () => {
+  //   const printWindow = window.open("", "", "width=800,height=600");
+  //   printWindow.document.open();
+  //   printWindow.document.write(`
+  //     <html>
+  //       <head>
+  //         <title>Print Duplicate Receipt</title>
+  //         <style>
+  //           .receipt {
+  //             text-align: center;
+  //           }
+  //           .center-image {
+  //             display: block;
+  //             margin: 0 auto;
+  //           }
+  //           .receipt-description {
+  //             display: flex;
+  //             flex-direction: column;
+  //             align-items: center;
+  //             margin: 10px 0 1px 0;
+  //             margin-bottom: 10px;
+  //           }
+  //           .receipt-description p {
+  //             font-size: 12px;
+  //             margin: 5px 0 1px 0;
+  //             line-height: 1.1;
+  //             color: #555;
+  //           }
+  //           .receipt-item p {
+  //             font-size: 12px;
+  //             margin: 1px 0;
+  //             line-height: 1.1;
+  //             white-space: nowrap;
+  //           }
+  //           .receipt-title {
+  //             font-size: 14px;
+  //             margin: 10px 0;
+  //             text-align: center;
+  //             border-bottom: 1px solid #000;
+  //             padding-bottom: 5px;
+  //           }
+  //           .receipt-item p {
+  //             font-size: 12px;
+  //             margin: 1px 0;
+  //             line-height: 1.1;
+  //             white-space: nowrap;
+  //             position: relative;
+  //           }
+  //           .receipt-item p:last-of-type {
+  //             padding-bottom: 10px;
+  //             border-bottom: 1px solid #000;
+  //           }
+  //           .receipt-footer {
+  //             font-size: 5px;
+  //             line-height: 1.1;
+  //             color: #555;
+  //             font-family: Arial;
+  //           }
+  //         </style>
+  //       </head>
+  //       <body>
+  //         ${duplicateReceiptRef.current.innerHTML}
+  //       </body>
+  //     </html>
+  //   `);
+  //   printWindow.document.close();
+  //   printWindow.focus();
+  //   printWindow.print();
+  //   printWindow.onafterprint = () => {
+  //     setDuplicateModal(false);
+  //     // Close the window
+  //     printWindow.close();
+  //   };
+  // };
 
 
   const handleSubmit = async () => {

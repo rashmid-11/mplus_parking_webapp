@@ -123,6 +123,7 @@ const DateRangeReport = () => {
       };
 
       const response = await axios.post(url, data);
+      console.log('range data' , response)
 
       if (response.data && response.data.Data && Array.isArray(response.data.Data.list)) {
         const list = response.data.Data.list;

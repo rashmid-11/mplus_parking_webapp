@@ -60,54 +60,186 @@ import axios from "axios";
 
 
 function Default() {
-  const lineChartData = {
-    labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
-    datasets: [
-      {
-        label: 'Car',
-        fill: false,
-        lineTension: 0.1,
-        backgroundColor: 'rgba(75,192,192,0.4)',
-        borderColor: 'rgba(75,192,192,1)',
-        borderCapStyle: 'butt',
-        borderDash: [],
-        borderDashOffset: 0.0,
-        borderJoinStyle: 'miter',
-        pointBorderColor: 'rgba(75,192,192,1)',
-        pointBackgroundColor: '#fff',
-        pointBorderWidth: 1,
-        pointHoverRadius: 5,
-        pointHoverBackgroundColor: 'rgba(75,192,192,1)',
-        pointHoverBorderColor: 'rgba(220,220,220,1)',
-        pointHoverBorderWidth: 2,
-        pointRadius: 1,
-        pointHitRadius: 10,
-        data: [65, 59, 80, 81, 56, 55, 40]
-      },
-      {
-        label: 'Bike',
-        fill: false,
-        lineTension: 0.1,
-        backgroundColor: 'rgba(255,99,132,0.4)',
-        borderColor: 'rgba(255,99,132,1)',
-        borderCapStyle: 'butt',
-        borderDash: [],
-        borderDashOffset: 0.0,
-        borderJoinStyle: 'miter',
-        pointBorderColor: 'rgba(255,99,132,1)',
-        pointBackgroundColor: '#fff',
-        pointBorderWidth: 1,
-        pointHoverRadius: 5,
-        pointHoverBackgroundColor: 'rgba(255,99,132,1)',
-        pointHoverBorderColor: 'rgba(220,220,220,1)',
-        pointHoverBorderWidth: 2,
-        pointRadius: 1,
-        pointHitRadius: 10,
-        data: [30, 45, 55, 45, 65, 50, 35]
-      }
-    ]
-  };
 
+  const [vehicleTypes, setVehicleTypes] = useState([]);
+  const [lineChartData, setLineChartData] = useState({
+    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+    datasets: [] // Start with an empty array and populate it later
+  });
+  
+  // Function to generate colors dynamically
+  const generateColor = (index) => {
+    const colors = [
+      'rgba(255,99,132,0.4)', // Pink
+      'rgba(75,192,192,0.4)', // Teal
+      'rgba(255,205,86,0.4)', // Yellow
+      'rgba(153,102,255,0.4)', // Purple
+      'rgba(255,159,64,0.4)'  // Orange
+    ];
+    const borderColors = [
+      'rgba(255,99,132,1)',   // Pink
+      'rgba(75,192,192,1)',   // Teal
+      'rgba(255,205,86,1)',   // Yellow
+      'rgba(153,102,255,1)',  // Purple
+      'rgba(255,159,64,1)'    // Orange
+    ];
+    return {
+      backgroundColor: colors[index % colors.length],
+      borderColor: borderColors[index % borderColors.length]
+    };
+  };
+  
+  useEffect(() => {
+    // Fetch vehicle types from the API
+    const fetchVehicleTypes = async () => {
+      try {
+        const imei = sessionStorage.getItem("IMEI");
+        const emailID = sessionStorage.getItem("Email");
+        const password = sessionStorage.getItem("Password");
+        const token = sessionStorage.getItem("Token");
+        const siteId = sessionStorage.getItem("SiteId");
+  
+        const response = await axios.post("/api/AppServerCall/getVehicleTypes", null, {
+          params: { imei, emailID, password, token, siteId },
+        });
+  
+        if (response.data?.Data?.list && Array.isArray(response.data.Data.list)) {
+          setVehicleTypes(response.data.Data.list);
+        } else {
+          console.error("Unexpected response data format:", response.data);
+          setVehicleTypes([]);
+        }
+      } catch (error) {
+        console.error("Error fetching vehicle types:", error);
+        setVehicleTypes([]);
+      }
+    };
+  
+    fetchVehicleTypes();
+  }, []);
+  
+  useEffect(() => {
+    // Fetch report data and update the chart
+    const handleShowReport = async () => {
+      try {
+        const imei = sessionStorage.getItem('IMEI');
+        const emailID = sessionStorage.getItem('Email');
+        const password = sessionStorage.getItem('Password');
+        const token = sessionStorage.getItem('Token');
+        const siteName = sessionStorage.getItem('SiteName');
+  
+        if (!imei || !emailID || !password || !token || !siteName) {
+          console.error('Required session parameters are missing');
+          return;
+        }
+  
+        const currentYear = new Date().getFullYear(); // Get the current year
+const startDate = `${currentYear}-01-01`; // Start date: January 1st of the current year
+const endDate = `${currentYear}-12-31`;   // End date: December 31st of the current year
+
+  
+        const url = `/api/AppServerCall/getRequests`;
+        const data = {
+          imei,
+          emailID,
+          password,
+          token,
+          search: `${startDate},${endDate}`,
+          type: 0
+        };
+  
+        const response = await axios.post(url, data);
+        console.log('range data', response);
+  
+        if (response.data && response.data.Data && Array.isArray(response.data.Data.list)) {
+          const list = response.data.Data.list;
+  
+          // Initialize counts for each vehicle type
+          const vehicleCount = vehicleTypes.reduce((acc, type) => {
+            acc[type.vehType] = new Array(12).fill(0); // Initialize counts for each month
+            return acc;
+          }, {});
+  
+          console.log('Initialized vehicle counts:', vehicleCount); // Debug line
+  
+          // Count vehicles per type and month
+          list.forEach(item => {
+            const vehicleType = item.vehtype; // Vehicle type from the API
+  
+            // Ensure vehicleType is a string and trim any whitespace
+            if (typeof vehicleType !== 'string') {
+              console.error('Vehicle type is not a string:', item);
+              return;
+            }
+  
+            const trimmedVehicleType = vehicleType.trim(); // Trim any extra whitespace
+  
+            if (!trimmedVehicleType) {
+              console.error('Vehicle type is empty:', item);
+              return;
+            }
+  
+            if (trimmedVehicleType in vehicleCount) {
+              const itemDate = new Date(item.intime);
+              const month = itemDate.getMonth(); // getMonth returns 0 for January, 1 for February, etc.
+  
+              // Verify if itemDate is valid
+              if (!isNaN(itemDate.getTime())) {
+                vehicleCount[trimmedVehicleType][month]++;
+              } else {
+                console.error('Invalid date:', item.intime);
+              }
+            } else {
+              console.error('Vehicle type not found in vehicleCount:', trimmedVehicleType);
+            }
+          });
+  
+          console.log('Updated vehicle counts:', vehicleCount); // Debug line
+  
+          // Prepare datasets for the chart
+          const datasets = vehicleTypes.map((type, index) => {
+            const typeName = type.vehType;
+            const color = generateColor(index); // Get color for the type
+  
+            return {
+              label: typeName,
+              fill: false,
+              lineTension: 0.1,
+              backgroundColor: color.backgroundColor,
+              borderColor: color.borderColor,
+              borderCapStyle: 'butt',
+              borderDash: [],
+              borderDashOffset: 0.0,
+              borderJoinStyle: 'miter',
+              pointBorderColor: color.borderColor,
+              pointBackgroundColor: '#fff',
+              pointBorderWidth: 1,
+              pointHoverRadius: 5,
+              pointHoverBackgroundColor: color.borderColor,
+              pointHoverBorderColor: 'rgba(220,220,220,1)',
+              pointHoverBorderWidth: 2,
+              pointRadius: 1,
+              pointHitRadius: 10,
+              data: vehicleCount[typeName] || new Array(12).fill(0) // Monthly counts for each vehicle type
+            };
+          });
+  
+          // Update chart data
+          setLineChartData(prevData => ({
+            ...prevData,
+            datasets
+          }));
+        }
+      } catch (error) {
+        console.error('Error fetching data', error);
+      }
+    };
+  
+    if (vehicleTypes.length > 0) {
+      handleShowReport();
+    }
+  }, [vehicleTypes]);
+  
 const [inVehicleCount, setInVehicleCount] = useState(0);
 const [outVehicleCount, setOutVehicleCount] = useState(0);
 const [saleVehicleCount, setSaleVehicleCount] = useState(0);
@@ -384,7 +516,7 @@ const [stockVehicleCount, setStockVehicleCount] = useState(0);
                 <ArgonTypography variant="button"  fontWeight="medium">
                   4% more{" "}
                   <ArgonTypography variant="button" fontWeight="regular">
-                    in 2022
+                    in {new Date().getFullYear()}
                   </ArgonTypography>
                 </ArgonTypography>
               </ArgonBox>
@@ -392,15 +524,15 @@ const [stockVehicleCount, setStockVehicleCount] = useState(0);
                 <div>
                   <Line
                     data={lineChartData}
-                    options={{
-                      scales: {
-                        yAxes: [{
-                          ticks: {
-                            beginAtZero: true
-                          }
-                        }]
-                      }
-                    }}
+                    // options={{
+                    //   scales: {
+                    //     yAxes: [{
+                    //       ticks: {
+                    //         beginAtZero: true
+                    //       }
+                    //     }]
+                    //   }
+                    // }}
                   />
                 </div>
               </ArgonBox>
