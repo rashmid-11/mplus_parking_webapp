@@ -1,15 +1,18 @@
 import React, { useState } from 'react';
-import { Row, Col, Card, CardBody, CardTitle, Modal, ModalHeader, ModalBody, ModalFooter, Button } from 'reactstrap';
+import { Row, Col, Card, CardBody, CardTitle, Modal, ModalHeader, ModalBody, ModalFooter, Button ,CardImg} from 'reactstrap';
 import VehicleIn from './vehiclein'; // Import the VehicleIn component
 import VehicleOut from './vehicleout'; // Import the VehicleOut component
 
-import vin from '../../../assets/images/vingreen.mp4';
-import parking from '../../../assets/images/voutred.mp4';
+// import vin from '../../../assets/images/vingreen.mp4';
+// import parking from '../../../assets/images/voutred.mp4';
+
+
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../css/tab.css'; // Import the custom CSS file
 import { Container } from 'react-bootstrap';
-
+import in2 from '../../../assets/images/in2.jpg'; 
+import out from '../../../assets/images/out2.jpg';
 const Tabsnew = () => {
   const [modalIn, setModalIn] = useState(false);
   const [modalOut, setModalOut] = useState(false);
@@ -26,12 +29,13 @@ const Tabsnew = () => {
           <CardBody>
               <CardTitle tag="h4" style={{ fontWeight: '800' }}>Vehicle In</CardTitle>
             </CardBody>
-            <div className="video-container">
+            <CardImg className='cimg' top width="100%" height="330px" src={in2} alt="User Wise Reports" />
+            {/*  <div className="video-container">
               <video width="100%" height="100%" autoPlay loop muted>
                 <source src={vin} type="video/mp4" />
                 Your browser does not support the video tag.
               </video>
-            </div>
+            </div>*/}
            
           </Card>
         </Col>
@@ -42,12 +46,13 @@ const Tabsnew = () => {
           <CardBody>
               <CardTitle tag="h4" style={{ fontWeight: '800' }}>Vehicle Out</CardTitle>
             </CardBody>
-            <div className="video-container">
+            <CardImg className='cimg' top width="100%" height="330px" src={out} alt="User Wise Reports" />
+            {/* <div className="video-container">
               <video width="100%" height="100%" autoPlay loop muted>
                 <source src={parking} type="video/mp4" />
                 Your browser does not support the video tag.
               </video>
-            </div>
+            </div> */}
           
           </Card>
         </Col>

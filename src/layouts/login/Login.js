@@ -21,7 +21,7 @@ function Login({ setIsLoggedIn }) {
 
   async function loginUser(email, password, imei) {
     try {
-      const response = await axios.post('/api/AppServerCall/loginCustomer', null, {
+      const response = await axios.post('/newapi/AppServerCall/loginCustomer', null, {
         params: {
           imei: imei,
           emailID: email,
@@ -32,7 +32,7 @@ function Login({ setIsLoggedIn }) {
 
       // Handle successful login
       if (response.status === 200 && response.data.ShResult === 100) {
-        const { userName, password, emailID, mobileNo, imei, token, siteName, idCustomer, siteAddress, deviceId, siteId, deviceNumber, siteType, siteTypeName } = response.data.Data;
+        const { userName, password, emailID, mobileNo, imei, token, siteName, idCustomer, siteAddress, deviceId, siteId, deviceNumber, siteType, siteTypeName,sitelaneid,sitelanename,anprid,anprcamera,anprsn} = response.data.Data;
 
         console.log('Login successful!');
         console.log('UserName:', userName);
@@ -49,6 +49,13 @@ function Login({ setIsLoggedIn }) {
         console.log('DeviceNumber:', deviceNumber);
         console.log('SiteType:', siteType);
         console.log('SiteTypeName:', siteTypeName);
+        console.log('sitelaneid:', sitelaneid);
+        console.log('sitelanename:', sitelanename);
+        console.log('anprid:', anprid);
+        console.log('anprcamera:', anprcamera);
+         console.log('anprsn:', anprsn);
+        
+       
 
         // Store user information in session storage
         sessionStorage.setItem('UserName', userName);
@@ -65,6 +72,11 @@ function Login({ setIsLoggedIn }) {
         sessionStorage.setItem('DeviceNumber', deviceNumber);
         sessionStorage.setItem('SiteType', siteType);
         sessionStorage.setItem('SiteTypeName', siteTypeName);
+        sessionStorage.setItem('sitelaneid', sitelaneid);
+        sessionStorage.setItem('sitelanename', sitelanename);
+        sessionStorage.setItem('anprid', anprid);
+        sessionStorage.setItem('anprcamera', anprcamera);
+        
         sessionStorage.setItem('isLoggedIn', true);
 
         setIsLoggedIn(true);

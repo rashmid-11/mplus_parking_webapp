@@ -32,20 +32,46 @@ const VehicleIn = () => {
   const [duplicateModal, setDuplicateModal] = useState(false);
   const [vehicleDetails, setVehicleDetails] = useState({});
 
-
   const handleANPRClick = async () => {
+    console.log("ANPR button clicked"); // Confirms button click
+
+    // Retrieve values from session storage
+    const imei = sessionStorage.getItem("IMEI");
+    const emailID = sessionStorage.getItem("Email");
+    const password = sessionStorage.getItem("Password");
+    const token = sessionStorage.getItem("Token");
+    const siteId = sessionStorage.getItem("SiteId");
+    const userid = sessionStorage.getItem("IdCustomer");
+    const sitelanid = sessionStorage.getItem("sitelaneid");
+    const anprid = sessionStorage.getItem("anprid");
+
+    console.log(sitelanid)
+
     try {
-      const response = await fetch('http://localhost:3005/api/latestin-nprdata');
-      if (response.ok) {
-        const data = await response.json();
-        setVehicleNumber(data.plateNumber); // Set the vehicle number from the API response
+      const response = await axios.post("/newapi/AppServerCall/getVehicleNumberFromANPRCamera", null, {
+        params: {
+          imei,
+          emailID,
+          password,
+          token,
+          siteId,
+          userid,
+          sitelanid,
+          anprid,
+        },
+      });
+      console.log("ANPR API response:", response.data); // Logs API response
+
+      if (response.data && response.data.Data) {
+        setVehicleNumber(response.data.Data); // Set the 'Data' field in the input box
       } else {
-        console.error('Failed to fetch ANPR data');
+        console.error("No data received from ANPR API");
       }
     } catch (error) {
-      console.error('Error fetching ANPR data:', error);
+      console.error("Error fetching ANPR data:", error); // Log errors
     }
   };
+
 
 
   const receiptRef = useRef(null);
@@ -106,7 +132,7 @@ const VehicleIn = () => {
 
   const printReceipt = () => {
     const printWindow = window.open("", "", "width=800,height=600");
-    
+
     if (!printWindow) {
       console.error("Failed to open print window.");
       return;
@@ -296,162 +322,6 @@ const VehicleIn = () => {
   };
 
 
-
-
-  // const printReceipt = () => {
-  //   const printWindow = window.open("", "", "width=800,height=600");
-  //   printWindow.document.open();
-  //   printWindow.document.write(`
-  //     <html>
-  //       <head>
-  //         <title>Print Receipt</title>
-  //         <style>
-  //           .receipt {
-  //             text-align: center;
-  //           }
-  //           .center-image {
-  //             display: block;
-  //             margin: 0 auto;
-  //           }
-  //           .receipt-description {
-  //             display: flex;
-  //             flex-direction: column;
-  //             align-items: center;
-  //             margin-bottom: 10px;
-  //             margin: 10px 0 1px 0;
-  //           }
-  //           .receipt-description p {
-  //             font-size: 12px;
-  //             margin: 5px 0 1px 0;
-  //             line-height: 1.1;
-  //             color: #555;
-  //           }
-  //           .receipt-item p {
-  //             font-size: 12px;
-  //             margin: 1px 0;
-  //             line-height: 1.1;
-  //             white-space: nowrap;
-  //           }
-  //           .receipt-title {
-  //             font-size: 14px;
-  //             margin: 10px 0;
-  //             text-align: center;
-  //             border-bottom: 1px solid #000;
-  //             padding-bottom: 5px;
-  //           }
-  //           .receipt-item p {
-  //             font-size: 12px;
-  //             margin: 1px 0;
-  //             line-height: 1.1;
-  //             white-space: nowrap;
-  //             position: relative;
-  //           }
-  //           .receipt-item p:last-of-type {
-  //             padding-bottom: 10px;
-  //             border-bottom: 1px solid #000;
-  //           }
-  //           .receipt-footer {
-  //             font-size: 5px;
-  //             line-height: 1.1;
-  //             color: #555;
-  //             font-family: Arial;
-  //           }
-  //         </style>
-  //       </head>
-  //       <body>
-  //         ${receiptRef.current.innerHTML}
-  //       </body>
-  //     </html>
-  //   `);
-  //   printWindow.document.close();
-  //   printWindow.focus();
-  //   printWindow.print();
-  //   printWindow.onafterprint = () => {
-  //     setModal(false);
-  //     setTimeout(() => {
-  //       setDuplicateModal(true);
-  //     }, 1000);
-  //     // Close the window after printing
-  //     printWindow.close();
-  //   };
-  // };
-
-  // const printDuplicateReceipt = () => {
-  //   const printWindow = window.open("", "", "width=800,height=600");
-  //   printWindow.document.open();
-  //   printWindow.document.write(`
-  //     <html>
-  //       <head>
-  //         <title>Print Duplicate Receipt</title>
-  //         <style>
-  //           .receipt {
-  //             text-align: center;
-  //           }
-  //           .center-image {
-  //             display: block;
-  //             margin: 0 auto;
-  //           }
-  //           .receipt-description {
-  //             display: flex;
-  //             flex-direction: column;
-  //             align-items: center;
-  //             margin: 10px 0 1px 0;
-  //             margin-bottom: 10px;
-  //           }
-  //           .receipt-description p {
-  //             font-size: 12px;
-  //             margin: 5px 0 1px 0;
-  //             line-height: 1.1;
-  //             color: #555;
-  //           }
-  //           .receipt-item p {
-  //             font-size: 12px;
-  //             margin: 1px 0;
-  //             line-height: 1.1;
-  //             white-space: nowrap;
-  //           }
-  //           .receipt-title {
-  //             font-size: 14px;
-  //             margin: 10px 0;
-  //             text-align: center;
-  //             border-bottom: 1px solid #000;
-  //             padding-bottom: 5px;
-  //           }
-  //           .receipt-item p {
-  //             font-size: 12px;
-  //             margin: 1px 0;
-  //             line-height: 1.1;
-  //             white-space: nowrap;
-  //             position: relative;
-  //           }
-  //           .receipt-item p:last-of-type {
-  //             padding-bottom: 10px;
-  //             border-bottom: 1px solid #000;
-  //           }
-  //           .receipt-footer {
-  //             font-size: 5px;
-  //             line-height: 1.1;
-  //             color: #555;
-  //             font-family: Arial;
-  //           }
-  //         </style>
-  //       </head>
-  //       <body>
-  //         ${duplicateReceiptRef.current.innerHTML}
-  //       </body>
-  //     </html>
-  //   `);
-  //   printWindow.document.close();
-  //   printWindow.focus();
-  //   printWindow.print();
-  //   printWindow.onafterprint = () => {
-  //     setDuplicateModal(false);
-  //     // Close the window
-  //     printWindow.close();
-  //   };
-  // };
-
-
   const handleSubmit = async () => {
     if (!selectedVehicleType) {
       console.error("Vehicle type not selected");
@@ -470,7 +340,10 @@ const VehicleIn = () => {
       userId: sessionStorage.getItem("IdCustomer"),
       rate: selectedVehicleType.rate,
       vehTypeId: selectedVehicleType.vehTypeId,
-      isPrepaid: 0,
+      sitelaneId : sessionStorage.getItem("sitelaneid"),
+      anprid : sessionStorage.getItem("anprid"),
+      isPrepaid: sessionStorage.getItem("SiteType") == "True" ? 1 : 0,
+      // isPrepaid: 0,
       vehType: selectedVehicleType.vehType,
     };
 
@@ -539,7 +412,7 @@ const VehicleIn = () => {
                     <Input
                       type="text"
                       id="vehicleNumber"
-                      value={vehicleNumber}
+                      value={vehicleNumber || ""} // Ensure vehicleNumber is never undefined
                       onChange={(e) => setVehicleNumber(e.target.value)}
                       placeholder="Enter vehicle number"
                     />
@@ -554,6 +427,7 @@ const VehicleIn = () => {
                   >ANPR </Button>
                 </Col>
               </Row>
+
 
               <Row className="mb-3 mt-2">
                 <Col>
@@ -687,6 +561,7 @@ const VehicleIn = () => {
               <QRCode value={vehicleDetails.receiptNumber || ''} size={100} />
             </div>
           </div>
+
         </ModalBody>
 
         <ModalFooter>
@@ -703,3 +578,9 @@ const VehicleIn = () => {
 };
 
 export default VehicleIn;
+
+
+
+
+
+

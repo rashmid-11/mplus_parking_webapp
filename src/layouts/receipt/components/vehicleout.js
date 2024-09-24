@@ -127,7 +127,7 @@ const VehicleLogout = () => {
           siteId,
           deviceId,
           userId,
-          isPrepaid: 0,
+          isPrepaid: sessionStorage.getItem("SiteType") == "True" ? 1 : 0,
           paymenttype: selectedPaymentType, 
           paymentmode: selectedPaymentMode 
         }
