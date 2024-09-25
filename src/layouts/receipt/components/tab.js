@@ -3,8 +3,8 @@ import { Row, Col, Card, CardBody, CardTitle, Modal, ModalHeader, ModalBody, Mod
 import VehicleIn from './vehiclein'; // Import the VehicleIn component
 import VehicleOut from './vehicleout'; // Import the VehicleOut component
 
-// import vin from '../../../assets/images/vingreen.mp4';
-// import parking from '../../../assets/images/voutred.mp4';
+import vin from '../../../assets/images/In.mp4';
+import parking from '../../../assets/images/Out.mp4';
 
 
 
@@ -29,13 +29,13 @@ const Tabsnew = () => {
           <CardBody>
               <CardTitle tag="h4" style={{ fontWeight: '800' }}>Vehicle In</CardTitle>
             </CardBody>
-            <CardImg className='cimg' top width="100%" height="330px" src={in2} alt="User Wise Reports" />
-            {/*  <div className="video-container">
+            {/* <CardImg className='cimg' top width="100%" height="330px" src={in2} alt="User Wise Reports" /> */}
+             <div className="video-container">
               <video width="100%" height="100%" autoPlay loop muted>
                 <source src={vin} type="video/mp4" />
                 Your browser does not support the video tag.
               </video>
-            </div>*/}
+            </div>
            
           </Card>
         </Col>
@@ -46,13 +46,13 @@ const Tabsnew = () => {
           <CardBody>
               <CardTitle tag="h4" style={{ fontWeight: '800' }}>Vehicle Out</CardTitle>
             </CardBody>
-            <CardImg className='cimg' top width="100%" height="330px" src={out} alt="User Wise Reports" />
-            {/* <div className="video-container">
+            {/* <CardImg className='cimg' top width="100%" height="330px" src={out} alt="User Wise Reports" /> */}
+            <div className="video-container">
               <video width="100%" height="100%" autoPlay loop muted>
                 <source src={parking} type="video/mp4" />
                 Your browser does not support the video tag.
               </video>
-            </div> */}
+            </div>
           
           </Card>
         </Col>

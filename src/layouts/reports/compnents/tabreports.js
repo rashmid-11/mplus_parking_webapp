@@ -3,8 +3,12 @@ import { Container, Row, Col, Card, CardImg, CardBody, CardTitle, Modal, ModalHe
 import Reportsale from './reportsale'; // Import the Reportsale component
 import Details from './details'; // Import the Details component
 import UserWiseReport from './UserwiseRport';
-import p1 from '../../../assets/images/sales1.jpg';
-import p2 from '../../../assets/images/detailteam.jpg';
+import sale from '../../../assets/images/sale.mp4';
+import Detail from '../../../assets/images/Details.mp4';
+import Daterange from '../../../assets/images/DateRangeReport.mp4';
+import Todaysale from '../../../assets/images/Todaysale.mp4';
+import userreport from '../../../assets/images/userreport.mp4';
+
 import p3 from '../../../assets/images/datewisereport.jpg';
 import p4 from '../../../assets/images/site2.jpg';
 import p5 from '../../../assets/images/userwisereport.jpg'; 
@@ -35,7 +39,13 @@ const Tabreports = () => {
           <CardBody>
               <CardTitle tag="h4" style={{ fontWeight: '800' }}>Sales</CardTitle>
             </CardBody>
-            <CardImg top className='cimg' width="100%" height="330px" src={p1} alt="Sales" />
+            {/* <CardImg top className='cimg' width="100%" height="330px" src={p1} alt="Sales" /> */}
+            <div className="video-container">
+              <video width="100%" height="100%" autoPlay loop muted>
+                <source src={sale} type="video/mp4" />
+                Your browser does not support the video tag.
+              </video>
+            </div>
           
           </Card>
         </Col>
@@ -47,7 +57,13 @@ const Tabreports = () => {
               <CardTitle tag="h4" style={{ fontWeight: '800' }}>Details</CardTitle>
             </CardBody>
 
-            <CardImg className='cimg' top width="100%" height="330px" src={p2} alt="Details" />
+            {/* <CardImg className='cimg' top width="100%" height="330px" src={p2} alt="Details" /> */}
+            <div className="video-container">
+              <video width="100%" height="100%" autoPlay loop muted>
+                <source src={Detail} type="video/mp4" />
+                Your browser does not support the video tag.
+              </video>
+            </div>
            
           </Card>
         </Col>
@@ -61,8 +77,13 @@ const Tabreports = () => {
               <CardTitle tag="h4" style={{ fontWeight: '800' }}>Date Range Reports</CardTitle>
             </CardBody>
 
-            <CardImg className='cimg' top width="100%" height="330px" src={p3} alt="Details" />
-           
+            {/* <CardImg className='cimg' top width="100%" height="330px" src={p3} alt="Details" /> */}
+            <div className="video-container">
+              <video width="100%" height="100%" autoPlay loop muted>
+                <source src={Daterange} type="video/mp4" />
+                Your browser does not support the video tag.
+              </video>
+            </div>
           </Card>
         </Col>
 
@@ -72,7 +93,13 @@ const Tabreports = () => {
               <CardTitle tag="h4" style={{ fontWeight: '800' }}>Todays Sale Reports</CardTitle>
             </CardBody>
 
-            <CardImg className='cimg' top width="100%" height="330px" src={p4} alt="Details" />
+            {/* <CardImg className='cimg' top width="100%" height="330px" src={p4} alt="Details" /> */}
+            <div className="video-container">
+              <video width="100%" height="100%" autoPlay loop muted>
+                <source src={Todaysale} type="video/mp4" />
+                Your browser does not support the video tag.
+              </video>
+            </div>
            
           </Card>
         </Col>
@@ -84,7 +111,13 @@ const Tabreports = () => {
             <CardBody>
               <CardTitle tag="h4" style={{ fontWeight: '800' }}>User Wise Reports</CardTitle>
             </CardBody>
-            <CardImg className='cimg' top width="100%" height="330px" src={p5} alt="User Wise Reports" />
+            {/* <CardImg className='cimg' top width="100%" height="330px" src={p5} alt="User Wise Reports" /> */}
+            <div className="video-container">
+              <video width="100%" height="100%" autoPlay loop muted>
+                <source src={userreport} type="video/mp4" />
+                Your browser does not support the video tag.
+              </video>
+            </div>
           </Card>
         </Col>
       </Row>

@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import { Container, Row, Col, Card, CardImg, CardBody, CardTitle, Modal, ModalHeader, ModalBody, ModalFooter, Button } from 'reactstrap';
 import Panelty from './panelty'; 
 import Pass from './pass'; 
-import p1 from '../../../assets/images/penalty1.jpg';
-import p2 from '../../../assets/images/pass_V1.jpeg';
+import p1 from '../../../assets/images/penalty1.mp4';
+import p2 from '../../../assets/images/pass1.mp4';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../css/tab.css'; 
 
@@ -23,8 +23,13 @@ const Tabsales = () => {
           <CardBody>
               <CardTitle tag="h4" style={{ fontWeight: '800' }}>Penalty</CardTitle>
             </CardBody>
-            <CardImg className='cimg' top width="100%" height="330px" src={p1} alt="Panelty" />
-           
+            {/* <CardImg className='cimg' top width="100%" height="330px" src={p1} alt="Panelty" /> */}
+            <div className="video-container">
+              <video width="100%" height="100%" autoPlay loop muted>
+                <source src={p1} type="video/mp4" />
+                Your browser does not support the video tag.
+              </video>
+            </div>
           </Card>
         </Col>
 
@@ -34,8 +39,13 @@ const Tabsales = () => {
           <CardBody>
               <CardTitle tag="h4" style={{ fontWeight: '800' }}>Pass</CardTitle>
             </CardBody>
-            <CardImg className='cimg' top width="100%" height="330px" src={p2} alt="Pass" />
-         
+            {/* <CardImg className='cimg' top width="100%" height="330px" src={p2} alt="Pass" /> */}
+            <div className="video-container">
+              <video width="100%" height="100%" autoPlay loop muted>
+                <source src={p2} type="video/mp4" />
+                Your browser does not support the video tag.
+              </video>
+            </div>
           </Card>
         </Col>
       </Row>
